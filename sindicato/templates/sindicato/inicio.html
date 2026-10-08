@@ -1,0 +1,69 @@
+{% extends "sindicato/base.html" %}
+{% block titulo %}Inicio{% endblock %}
+{% block contenido %}
+
+  <div class="tarjetas">
+    <div class="tarjeta">
+      <div class="num">{{ total_centros }}</div>
+      <div class="label">Centros de trabajo</div>
+    </div>
+    <div class="tarjeta">
+      <div class="num">{{ total_agremiados }}</div>
+      <div class="label">Agremiados registrados</div>
+    </div>
+    <div class="tarjeta">
+      <div class="num">{{ documentos|length }}</div>
+      <div class="label">Documentos públicos</div>
+    </div>
+  </div>
+
+  {% if info.historia %}
+  <section>
+    <h2>Quiénes somos</h2>
+    <p>{{ info.historia }}</p>
+  </section>
+  {% endif %}
+
+  <section>
+    <h2>Centros de trabajo</h2>
+    {% if centros %}
+      <ul class="lista-centros">
+        {% for centro in centros %}
+          <li>
+            <a href="{% url 'sindicato:centro_detalle' centro.pk %}">{{ centro.nombre }} — {{ centro.empresa }}</a>
+            <span class="badge">{{ centro.total_agremiados }} agremiados</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Aún no hay centros de trabajo registrados.</p>
+    {% endif %}
+  </section>
+
+  <section>
+    <h2>Documentos recientes</h2>
+    {% if documentos %}
+      {% for doc in documentos %}
+        <div class="doc-item">
+          <div class="tipo">{{ doc.get_tipo_display }}</div>
+          <a href="{{ doc.archivo.url }}" target="_blank">{{ doc.titulo }}</a>
+        </div>
+      {% endfor %}
+      <p><a href="{% url 'sindicato:documentos' %}">Ver todos los documentos →</a></p>
+    {% else %}
+      <p>Aún no hay documentos públicos.</p>
+    {% endif %}
+  </section>
+
+  {% if info %}
+  <section>
+    <h2>Contacto</h2>
+    <p>
+      {{ info.domicilio_oficinas_centrales }}<br>
+      {% if info.telefono_contacto %}Tel: {{ info.telefono_contacto }}<br>{% endif %}
+      {% if info.correo_contacto %}{{ info.correo_contacto }}{% endif %}
+    </p>
+  </section>
+  {% endif %}
+
+{% endblock %}

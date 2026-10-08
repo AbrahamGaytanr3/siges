@@ -1,0 +1,32 @@
+{% extends "sindicato/base.html" %}
+{% block titulo %}{{ centro.nombre }}{% endblock %}
+{% block contenido %}
+
+  <p><a href="{% url 'sindicato:inicio' %}">&larr; Volver</a></p>
+
+  <section>
+    <h2>{{ centro.nombre }}</h2>
+    <p><strong>Empresa:</strong> {{ centro.empresa }}</p>
+    {% if centro.ciudad %}<p><strong>Ciudad:</strong> {{ centro.ciudad }}</p>{% endif %}
+    {% if centro.direccion %}<p><strong>Dirección:</strong> {{ centro.direccion }}</p>{% endif %}
+    <div class="tarjetas">
+      <div class="tarjeta">
+        <div class="num">{{ centro.total_agremiados }}</div>
+        <div class="label">Agremiados activos</div>
+      </div>
+    </div>
+  </section>
+
+  {% if documentos %}
+  <section>
+    <h2>Documentos de este centro</h2>
+    {% for doc in documentos %}
+      <div class="doc-item">
+        <div class="tipo">{{ doc.get_tipo_display }}</div>
+        <a href="{{ doc.archivo.url }}" target="_blank">{{ doc.titulo }}</a>
+      </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+{% endblock %}

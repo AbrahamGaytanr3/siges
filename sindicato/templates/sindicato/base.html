@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es-mx">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block titulo %}SIGES{% endblock %} — {{ info.siglas|default:"Sindicato" }}</title>
+  <link rel="stylesheet" href="{% static 'sindicato/estilo.css' %}">
+</head>
+<body>
+  <header class="top">
+    <h1>{{ info.nombre|default:"Sistema Integral de Gestión Sindical" }}</h1>
+    <p>{{ info.siglas }}</p>
+  </header>
+  <nav class="top">
+    <a href="{% url 'sindicato:inicio' %}">Inicio</a>
+    <a href="{% url 'sindicato:documentos' %}">Documentos y estatutos</a>
+  </nav>
+  <main>
+    {% block contenido %}{% endblock %}
+  </main>
+  <footer>SIGES — Sistema Integral de Gestión Sindical</footer>
+</body>
+</html>

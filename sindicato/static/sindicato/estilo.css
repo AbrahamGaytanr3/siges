@@ -1,0 +1,93 @@
+:root {
+  --azul: #1f4e5f;
+  --azul-claro: #dce9ec;
+  --gris: #595959;
+  --fondo: #f6f8f9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--fondo);
+  color: #222;
+}
+
+header.top {
+  background: var(--azul);
+  color: #fff;
+  padding: 22px 32px;
+}
+
+header.top h1 { margin: 0; font-size: 1.6rem; }
+header.top p { margin: 4px 0 0; opacity: .85; font-size: .95rem; }
+
+nav.top {
+  background: #16394547;
+  padding: 10px 32px;
+}
+nav.top a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 22px;
+  font-size: .9rem;
+}
+nav.top a:hover { text-decoration: underline; }
+
+main { max-width: 980px; margin: 0 auto; padding: 32px 20px 60px; }
+
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 24px 0; }
+.tarjeta {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  text-align: center;
+}
+.tarjeta .num { font-size: 1.8rem; font-weight: 700; color: var(--azul); }
+.tarjeta .label { color: var(--gris); font-size: .85rem; }
+
+.lista-centros { list-style: none; padding: 0; margin: 0; }
+.lista-centros li {
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lista-centros a { color: var(--azul); font-weight: 600; text-decoration: none; }
+.lista-centros a:hover { text-decoration: underline; }
+.badge {
+  background: var(--azul-claro);
+  color: var(--azul);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: .8rem;
+}
+
+.doc-item {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.doc-item .tipo { color: var(--gris); font-size: .8rem; text-transform: uppercase; }
+.doc-item a { color: var(--azul); font-weight: 600; }
+
+section h2 {
+  color: var(--azul);
+  border-bottom: 2px solid var(--azul-claro);
+  padding-bottom: 6px;
+}
+
+footer {
+  text-align: center;
+  color: var(--gris);
+  font-size: .8rem;
+  padding: 20px;
+}

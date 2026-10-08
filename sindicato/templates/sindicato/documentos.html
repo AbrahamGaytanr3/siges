@@ -1,0 +1,22 @@
+{% extends "sindicato/base.html" %}
+{% block titulo %}Documentos y estatutos{% endblock %}
+{% block contenido %}
+
+  <p><a href="{% url 'sindicato:inicio' %}">&larr; Volver</a></p>
+
+  <section>
+    <h2>Documentos y estatutos públicos</h2>
+    {% if documentos %}
+      {% for doc in documentos %}
+        <div class="doc-item">
+          <div class="tipo">{{ doc.get_tipo_display }}{% if doc.centro_trabajo %} · {{ doc.centro_trabajo.nombre }}{% endif %}</div>
+          <a href="{{ doc.archivo.url }}" target="_blank">{{ doc.titulo }}</a>
+          {% if doc.descripcion %}<p>{{ doc.descripcion }}</p>{% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>Aún no hay documentos públicos.</p>
+    {% endif %}
+  </section>
+
+{% endblock %}
