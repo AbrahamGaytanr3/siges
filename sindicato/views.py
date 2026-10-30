@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404
 from .models import InformacionSindicato, CentroTrabajo, Documento
@@ -6,6 +7,7 @@ CENTROS_POR_PAGINA = 10
 DOCUMENTOS_POR_PAGINA = 12
 
 
+@login_required
 def inicio(request):
     info = InformacionSindicato.objects.first()
     centros_qs = CentroTrabajo.objects.filter(activo=True)
@@ -25,12 +27,14 @@ def inicio(request):
     return render(request, "sindicato/inicio.html", context)
 
 
+@login_required
 def centro_detalle(request, pk):
     centro = get_object_or_404(CentroTrabajo, pk=pk, activo=True)
     documentos = Documento.objects.filter(es_publico=True, centro_trabajo=centro)
     return render(request, "sindicato/centro_detalle.html", {"centro": centro, "documentos": documentos})
 
 
+@login_required
 def documentos_lista(request):
     documentos_qs = Documento.objects.filter(es_publico=True)
     paginador = Paginator(documentos_qs, DOCUMENTOS_POR_PAGINA)

@@ -56,6 +56,13 @@ if not DEBUG:
 SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_SAVE_EVERY_REQUEST = True
 
+# Todo el sitio requiere sesión iniciada (es software interno para
+# delegados/integrantes, no un sitio público). django-axes protege este
+# login igual que el de /admin/, sin configuración adicional.
+LOGIN_URL = 'sindicato:login'
+LOGIN_REDIRECT_URL = 'sindicato:inicio'
+LOGOUT_REDIRECT_URL = 'sindicato:login'
+
 
 # Application definition
 

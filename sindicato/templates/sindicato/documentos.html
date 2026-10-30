@@ -5,7 +5,7 @@
   <a class="volver" href="{% url 'sindicato:inicio' %}">&larr; Volver</a>
 
   <section>
-    <h2>Documentos y estatutos públicos</h2>
+    <h2>Documentos y estatutos</h2>
     {% if documentos %}
       {% for doc in documentos %}
         <div class="doc-item tipo-{{ doc.tipo }}">
@@ -16,7 +16,7 @@
       {% endfor %}
       {% include "sindicato/_paginacion.html" with page_obj=documentos %}
     {% else %}
-      <p>Aún no hay documentos públicos.</p>
+      <p>Aún no hay documentos.</p>
     {% endif %}
   </section>
 

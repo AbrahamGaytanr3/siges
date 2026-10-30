@@ -13,7 +13,7 @@
     </div>
     <div class="tarjeta">
       <div class="num">{{ documentos|length }}</div>
-      <div class="label">Documentos públicos</div>
+      <div class="label">Documentos</div>
     </div>
   </div>
 
@@ -52,7 +52,7 @@
       {% endfor %}
       <p><a class="enlace-destacado" href="{% url 'sindicato:documentos' %}">Ver todos los documentos →</a></p>
     {% else %}
-      <p>Aún no hay documentos públicos.</p>
+      <p>Aún no hay documentos.</p>
     {% endif %}
   </section>
 

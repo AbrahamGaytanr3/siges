@@ -36,6 +36,12 @@ def crear_agremiado(centro, **kwargs):
     return Agremiado.objects.create(**datos)
 
 
+def crear_usuario(**kwargs):
+    datos = {"username": "delegado1", "password": "clave-segura-123"}
+    datos.update(kwargs)
+    return get_user_model().objects.create_user(**datos)
+
+
 class InformacionSindicatoModelTests(TestCase):
     def test_save_fuerza_singleton(self):
         primero = InformacionSindicato.objects.create(nombre="Sindicato A")
@@ -127,6 +133,11 @@ class InformacionSindicatoAdminTests(TestCase):
 
 @override_settings(MEDIA_ROOT=MEDIA_ROOT_PRUEBAS)
 class VistasPublicasTests(TestCase):
+    def setUp(self):
+        # Todo el sitio requiere sesión iniciada; estas vistas ya no son
+        # públicas, solo accesibles para delegados/integrantes autenticados.
+        self.client.force_login(crear_usuario())
+
     def _archivo(self):
         return SimpleUploadedFile("doc.txt", b"contenido", content_type="text/plain")
 
@@ -198,3 +209,83 @@ class AdminLoginTests(TestCase):
         self.client.force_login(usuario)
         response = self.client.get(reverse("admin:index"))
         self.assertEqual(response.status_code, 200)
+
+
+class AccesoProtegidoTests(TestCase):
+    """Todo el sitio requiere sesión iniciada (software interno, no público)."""
+
+    def test_inicio_redirige_a_login_sin_sesion(self):
+        response = self.client.get(reverse("sindicato:inicio"))
+        self.assertRedirects(
+            response, f"{reverse('sindicato:login')}?next={reverse('sindicato:inicio')}"
+        )
+
+    def test_documentos_redirige_a_login_sin_sesion(self):
+        response = self.client.get(reverse("sindicato:documentos"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("sindicato:login"), response.url)
+
+    def test_centro_detalle_redirige_a_login_sin_sesion(self):
+        centro = crear_centro()
+        response = self.client.get(reverse("sindicato:centro_detalle", args=[centro.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("sindicato:login"), response.url)
+
+    def test_inicio_accesible_con_sesion(self):
+        self.client.force_login(crear_usuario())
+        response = self.client.get(reverse("sindicato:inicio"))
+        self.assertEqual(response.status_code, 200)
+
+
+class LoginLogoutViewTests(TestCase):
+    def test_login_con_credenciales_validas_redirige_a_inicio(self):
+        crear_usuario(username="delegado1", password="clave-segura-123")
+        response = self.client.post(reverse("sindicato:login"), {
+            "username": "delegado1", "password": "clave-segura-123",
+        })
+        self.assertRedirects(response, reverse("sindicato:inicio"))
+
+    def test_login_con_credenciales_invalidas_no_autentica(self):
+        crear_usuario(username="delegado1", password="clave-segura-123")
+        response = self.client.post(reverse("sindicato:login"), {
+            "username": "delegado1", "password": "incorrecta",
+        })
+        self.assertEqual(response.status_code, 200)  # reformula el mismo form
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_logout_cierra_sesion_y_redirige_a_login(self):
+        self.client.force_login(crear_usuario())
+        response = self.client.post(reverse("sindicato:logout"))
+        self.assertRedirects(response, reverse("sindicato:login"))
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_nav_no_muestra_links_internos_sin_sesion(self):
+        response = self.client.get(reverse("sindicato:login"))
+        self.assertNotContains(response, 'href="/documentos/"')
+
+    def test_nav_muestra_cerrar_sesion_con_sesion(self):
+        self.client.force_login(crear_usuario())
+        response = self.client.get(reverse("sindicato:inicio"))
+        self.assertContains(response, "Cerrar sesión")
+
+
+class GruposMigracionTests(TestCase):
+    """La migración de datos 0004 crea los grupos Directiva/Delegados."""
+
+    def test_grupo_directiva_tiene_permisos_completos_en_los_4_modelos(self):
+        from django.contrib.auth.models import Group
+
+        directiva = Group.objects.get(name="Directiva")
+        codenames = set(directiva.permissions.values_list("codename", flat=True))
+        esperados = {
+            f"{accion}_{modelo}"
+            for accion in ("add", "change", "delete", "view")
+            for modelo in ("informacionsindicato", "centrotrabajo", "agremiado", "documento")
+        }
+        self.assertEqual(codenames, esperados)
+
+    def test_grupo_delegados_existe_sin_permisos_especiales(self):
+        from django.contrib.auth.models import Group
+
+        delegados = Group.objects.get(name="Delegados")
+        self.assertEqual(delegados.permissions.count(), 0)

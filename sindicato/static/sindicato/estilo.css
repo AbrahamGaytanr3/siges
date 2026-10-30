@@ -229,3 +229,63 @@ footer {
   margin: 0 auto 8px;
 }
 footer p { margin: 0; }
+
+/* ---------- Login ---------- */
+
+.login-envoltorio {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+.login-tarjeta { max-width: 360px; width: 100%; text-align: left; }
+.login-tarjeta h2 {
+  color: var(--azul-700);
+  margin: 0 0 18px;
+  text-align: center;
+}
+.login-tarjeta label {
+  display: block;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  margin: 14px 0 4px;
+}
+.login-tarjeta input[type="text"],
+.login-tarjeta input[type="password"] {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-sm);
+  font-size: .95rem;
+}
+.login-tarjeta button {
+  width: 100%;
+  margin-top: 18px;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+.login-error {
+  background: var(--acento-claro);
+  color: var(--acento);
+  border-radius: var(--radio-sm);
+  padding: 10px 12px;
+  font-size: .85rem;
+  margin: 0 0 8px;
+}
+
+/* ---------- Logout en el nav ---------- */
+
+.nav-logout { margin-left: auto; display: flex; }
+.nav-logout button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, .82);
+  font-size: .9rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background var(--transicion), color var(--transicion);
+}
+.nav-logout button:hover { background: rgba(255, 255, 255, .1); color: #fff; }

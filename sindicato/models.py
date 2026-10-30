@@ -114,8 +114,8 @@ class Documento(models.Model):
         help_text="Déjalo vacío si el documento aplica a todo el sindicato.",
     )
     es_publico = models.BooleanField(
-        "Visible en la sección pública", default=True,
-        help_text="Si está marcado, aparecerá en la página pública del sindicato.",
+        "Visible para delegados e integrantes", default=True,
+        help_text="Si está marcado, aparecerá en el sitio interno del sindicato.",
     )
     fecha_publicacion = models.DateField("Fecha de publicación", auto_now_add=True)
 

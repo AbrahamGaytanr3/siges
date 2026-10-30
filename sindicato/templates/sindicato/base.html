@@ -20,8 +20,14 @@
   </header>
   <nav class="top">
     <div class="contenedor">
-      <a href="{% url 'sindicato:inicio' %}" class="{% if request.resolver_match.url_name == 'inicio' %}activo{% endif %}">Inicio</a>
-      <a href="{% url 'sindicato:documentos' %}" class="{% if request.resolver_match.url_name == 'documentos' %}activo{% endif %}">Documentos y estatutos</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'sindicato:inicio' %}" class="{% if request.resolver_match.url_name == 'inicio' %}activo{% endif %}">Inicio</a>
+        <a href="{% url 'sindicato:documentos' %}" class="{% if request.resolver_match.url_name == 'documentos' %}activo{% endif %}">Documentos y estatutos</a>
+        <form method="post" action="{% url 'sindicato:logout' %}" class="nav-logout">
+          {% csrf_token %}
+          <button type="submit">Cerrar sesión</button>
+        </form>
+      {% endif %}
     </div>
   </nav>
   <main>
