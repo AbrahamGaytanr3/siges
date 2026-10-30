@@ -2,13 +2,13 @@
 {% block titulo %}Documentos y estatutos{% endblock %}
 {% block contenido %}
 
-  <p><a href="{% url 'sindicato:inicio' %}">&larr; Volver</a></p>
+  <a class="volver" href="{% url 'sindicato:inicio' %}">&larr; Volver</a>
 
   <section>
     <h2>Documentos y estatutos públicos</h2>
     {% if documentos %}
       {% for doc in documentos %}
-        <div class="doc-item">
+        <div class="doc-item tipo-{{ doc.tipo }}">
           <div class="tipo">{{ doc.get_tipo_display }}{% if doc.centro_trabajo %} · {{ doc.centro_trabajo.nombre }}{% endif %}</div>
           <a href="{{ doc.archivo.url }}" target="_blank">{{ doc.titulo }}</a>
           {% if doc.descripcion %}<p>{{ doc.descripcion }}</p>{% endif %}

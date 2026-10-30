@@ -45,12 +45,12 @@
     <h2>Documentos recientes</h2>
     {% if documentos %}
       {% for doc in documentos %}
-        <div class="doc-item">
+        <div class="doc-item tipo-{{ doc.tipo }}">
           <div class="tipo">{{ doc.get_tipo_display }}</div>
           <a href="{{ doc.archivo.url }}" target="_blank">{{ doc.titulo }}</a>
         </div>
       {% endfor %}
-      <p><a href="{% url 'sindicato:documentos' %}">Ver todos los documentos →</a></p>
+      <p><a class="enlace-destacado" href="{% url 'sindicato:documentos' %}">Ver todos los documentos →</a></p>
     {% else %}
       <p>Aún no hay documentos públicos.</p>
     {% endif %}

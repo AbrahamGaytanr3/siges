@@ -2,7 +2,7 @@
 {% block titulo %}{{ centro.nombre }}{% endblock %}
 {% block contenido %}
 
-  <p><a href="{% url 'sindicato:inicio' %}">&larr; Volver</a></p>
+  <a class="volver" href="{% url 'sindicato:inicio' %}">&larr; Volver</a>
 
   <section>
     <h2>{{ centro.nombre }}</h2>
@@ -21,7 +21,7 @@
   <section>
     <h2>Documentos de este centro</h2>
     {% for doc in documentos %}
-      <div class="doc-item">
+      <div class="doc-item tipo-{{ doc.tipo }}">
         <div class="tipo">{{ doc.get_tipo_display }}</div>
         <a href="{{ doc.archivo.url }}" target="_blank">{{ doc.titulo }}</a>
       </div>

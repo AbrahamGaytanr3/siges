@@ -5,20 +5,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block titulo %}SIGES{% endblock %} — {{ info.siglas|default:"Sindicato" }}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'sindicato/favicon.svg' %}">
   <link rel="stylesheet" href="{% static 'sindicato/estilo.css' %}">
 </head>
 <body>
   <header class="top">
-    <h1>{{ info.nombre|default:"Sistema Integral de Gestión Sindical" }}</h1>
-    <p>{{ info.siglas }}</p>
+    <div class="marca">
+      <span class="logo-badge">{{ info.siglas|default:"S"|slice:":1"|upper }}</span>
+      <div>
+        <h1>{{ info.nombre|default:"Sistema Integral de Gestión Sindical" }}</h1>
+        {% if info.siglas %}<p class="siglas">{{ info.siglas }}</p>{% endif %}
+      </div>
+    </div>
   </header>
   <nav class="top">
-    <a href="{% url 'sindicato:inicio' %}">Inicio</a>
-    <a href="{% url 'sindicato:documentos' %}">Documentos y estatutos</a>
+    <div class="contenedor">
+      <a href="{% url 'sindicato:inicio' %}" class="{% if request.resolver_match.url_name == 'inicio' %}activo{% endif %}">Inicio</a>
+      <a href="{% url 'sindicato:documentos' %}" class="{% if request.resolver_match.url_name == 'documentos' %}activo{% endif %}">Documentos y estatutos</a>
+    </div>
   </nav>
   <main>
     {% block contenido %}{% endblock %}
   </main>
-  <footer>SIGES — Sistema Integral de Gestión Sindical</footer>
+  <footer>{{ info.nombre|default:"SIGES — Sistema Integral de Gestión Sindical" }}</footer>
 </body>
 </html>
