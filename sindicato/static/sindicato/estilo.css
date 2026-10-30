@@ -41,17 +41,13 @@ header.top {
 
 .logo-badge {
   flex: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
   background: rgba(255, 255, 255, .14);
   border: 1px solid rgba(255, 255, 255, .25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  font-weight: 700;
-  letter-spacing: .02em;
+  padding: 4px;
+  object-fit: contain;
 }
 
 header.top h1 { margin: 0; font-size: 1.5rem; line-height: 1.25; }

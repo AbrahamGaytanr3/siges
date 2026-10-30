@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block titulo %}SIGES{% endblock %} — {{ info.siglas|default:"Sindicato" }}</title>
-  <link rel="icon" type="image/svg+xml" href="{% static 'sindicato/favicon.svg' %}">
+  <link rel="icon" type="image/png" href="{% static 'sindicato/favicon.png' %}">
   <link rel="stylesheet" href="{% static 'sindicato/estilo.css' %}">
 </head>
 <body>
   <header class="top">
     <div class="marca">
-      <span class="logo-badge">{{ info.siglas|default:"S"|slice:":1"|upper }}</span>
+      <img class="logo-badge" src="{% static 'sindicato/logo-sinttia.png' %}" alt="Logo {{ info.siglas|default:'del sindicato' }}">
       <div>
         <h1>{{ info.nombre|default:"Sistema Integral de Gestión Sindical" }}</h1>
         {% if info.siglas %}<p class="siglas">{{ info.siglas }}</p>{% endif %}
