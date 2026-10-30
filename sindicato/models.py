@@ -53,6 +53,11 @@ class CentroTrabajo(models.Model):
         verbose_name = "Centro de trabajo"
         verbose_name_plural = "Centros de trabajo"
         ordering = ["empresa", "nombre"]
+        indexes = [
+            # Cubre CentroTrabajo.objects.filter(activo=True), que además
+            # ordena por empresa/nombre (home público).
+            models.Index(fields=["activo", "empresa", "nombre"], name="centro_activo_orden_idx"),
+        ]
 
     def __str__(self):
         return f"{self.nombre} ({self.empresa})"
@@ -81,6 +86,11 @@ class Agremiado(models.Model):
         verbose_name = "Agremiado"
         verbose_name_plural = "Agremiados"
         ordering = ["nombre_completo"]
+        indexes = [
+            # Cubre CentroTrabajo.total_agremiados, que filtra por
+            # centro_trabajo + activo en cada centro listado.
+            models.Index(fields=["centro_trabajo", "activo"], name="agremiado_centro_activo_idx"),
+        ]
 
     def __str__(self):
         return f"{self.nombre_completo} ({self.matricula})"
@@ -113,6 +123,13 @@ class Documento(models.Model):
         verbose_name = "Documento"
         verbose_name_plural = "Documentos"
         ordering = ["-fecha_publicacion"]
+        indexes = [
+            # Cubre inicio/documentos_lista: filtrar por es_publico y
+            # ordenar por fecha_publicacion descendente.
+            models.Index(fields=["es_publico", "-fecha_publicacion"], name="documento_publico_fecha_idx"),
+            # Cubre centro_detalle: documentos de un centro que son públicos.
+            models.Index(fields=["centro_trabajo", "es_publico"], name="documento_centro_publico_idx"),
+        ]
 
     def __str__(self):
         return self.titulo
