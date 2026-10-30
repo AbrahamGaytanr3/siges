@@ -27,6 +27,9 @@
   <main>
     {% block contenido %}{% endblock %}
   </main>
-  <footer>{{ info.nombre|default:"SIGES — Sistema Integral de Gestión Sindical" }}</footer>
+  <footer>
+    <img class="logo-pie" src="{% static 'sindicato/logo-sinttia.png' %}" alt="Logo {{ info.siglas|default:'del sindicato' }}">
+    <p>{{ info.nombre|default:"SIGES — Sistema Integral de Gestión Sindical" }}</p>
+  </footer>
 </body>
 </html>

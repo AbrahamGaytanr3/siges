@@ -221,3 +221,11 @@ footer {
   border-top: 1px solid var(--borde);
   margin-top: 20px;
 }
+.logo-pie {
+  display: block;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  margin: 0 auto 8px;
+}
+footer p { margin: 0; }
