@@ -28,8 +28,11 @@ class InformacionSindicato(models.Model):
         return self.nombre
 
     def save(self, *args, **kwargs):
-        # Garantiza que solo exista un registro (singleton)
+        # Garantiza que solo exista un registro (singleton). force_insert se
+        # desactiva para que, si el registro ya existe, se actualice en vez
+        # de fallar con IntegrityError (ocurría al usar .objects.create()).
         self.pk = 1
+        kwargs["force_insert"] = False
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
