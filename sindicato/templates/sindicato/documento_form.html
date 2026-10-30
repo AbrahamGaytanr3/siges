@@ -1,0 +1,18 @@
+{% extends "sindicato/base.html" %}
+{% block titulo %}{{ accion }} documento{% endblock %}
+{% block contenido %}
+
+  <a class="volver" href="{% url 'sindicato:documentos' %}">&larr; Volver</a>
+
+  <div class="login-envoltorio">
+    <div class="tarjeta login-tarjeta">
+      <h2>{{ accion }} documento</h2>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="enlace-destacado">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

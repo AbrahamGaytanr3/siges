@@ -6,12 +6,16 @@
 
   <section>
     <h2>Documentos y estatutos</h2>
+    {% if perms.sindicato.add_documento %}
+      <p><a class="enlace-destacado" href="{% url 'sindicato:documento_subir' %}">+ Subir documento</a></p>
+    {% endif %}
     {% if documentos %}
       {% for doc in documentos %}
         <div class="doc-item tipo-{{ doc.tipo }}">
           <div class="tipo">{{ doc.get_tipo_display }}{% if doc.centro_trabajo %} · {{ doc.centro_trabajo.nombre }}{% endif %}</div>
           <a href="{{ doc.archivo.url }}" target="_blank">{{ doc.titulo }}</a>
           {% if doc.descripcion %}<p>{{ doc.descripcion }}</p>{% endif %}
+          {% include "sindicato/_doc_acciones.html" with doc=doc %}
         </div>
       {% endfor %}
       {% include "sindicato/_paginacion.html" with page_obj=documentos %}

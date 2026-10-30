@@ -1,0 +1,10 @@
+{% if perms.sindicato.change_documento or perms.sindicato.delete_documento %}
+  <div class="doc-acciones">
+    {% if perms.sindicato.change_documento %}
+      <a href="{% url 'sindicato:documento_editar' doc.pk %}">Editar</a>
+    {% endif %}
+    {% if perms.sindicato.delete_documento %}
+      <a href="{% url 'sindicato:documento_eliminar' doc.pk %}" class="enlace-peligro">Eliminar</a>
+    {% endif %}
+  </div>
+{% endif %}

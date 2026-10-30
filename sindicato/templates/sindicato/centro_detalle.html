@@ -24,6 +24,7 @@
       <div class="doc-item tipo-{{ doc.tipo }}">
         <div class="tipo">{{ doc.get_tipo_display }}</div>
         <a href="{{ doc.archivo.url }}" target="_blank">{{ doc.titulo }}</a>
+        {% include "sindicato/_doc_acciones.html" with doc=doc %}
       </div>
     {% endfor %}
   </section>

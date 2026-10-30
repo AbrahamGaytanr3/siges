@@ -42,6 +42,16 @@ def crear_usuario(**kwargs):
     return get_user_model().objects.create_user(**datos)
 
 
+def crear_directivo(**kwargs):
+    from django.contrib.auth.models import Group
+
+    datos = {"username": "directivo1"}
+    datos.update(kwargs)
+    usuario = crear_usuario(**datos)
+    usuario.groups.add(Group.objects.get(name="Directiva"))
+    return usuario
+
+
 class InformacionSindicatoModelTests(TestCase):
     def test_save_fuerza_singleton(self):
         primero = InformacionSindicato.objects.create(nombre="Sindicato A")
@@ -289,3 +299,102 @@ class GruposMigracionTests(TestCase):
 
         delegados = Group.objects.get(name="Delegados")
         self.assertEqual(delegados.permissions.count(), 0)
+
+
+@override_settings(MEDIA_ROOT=MEDIA_ROOT_PRUEBAS)
+class GestionDocumentosTests(TestCase):
+    """Subir/editar/eliminar documentos: solo Directiva puede, vía permisos."""
+
+    def _archivo(self, nombre="doc.txt"):
+        return SimpleUploadedFile(nombre, b"contenido", content_type="text/plain")
+
+    def _datos_formulario(self, **overrides):
+        datos = {
+            "titulo": "Estatuto 2026",
+            "tipo": "estatuto",
+            "descripcion": "",
+            "centro_trabajo": "",
+            "es_publico": "on",
+        }
+        datos.update(overrides)
+        return datos
+
+    # --- Directiva puede subir/editar/eliminar ---
+
+    def test_directiva_puede_subir_documento(self):
+        self.client.force_login(crear_directivo())
+        response = self.client.post(
+            reverse("sindicato:documento_subir"),
+            {**self._datos_formulario(), "archivo": self._archivo()},
+        )
+        self.assertRedirects(response, reverse("sindicato:documentos"))
+        self.assertTrue(Documento.objects.filter(titulo="Estatuto 2026").exists())
+
+    def test_directiva_puede_editar_documento(self):
+        self.client.force_login(crear_directivo())
+        documento = Documento.objects.create(titulo="Viejo título", archivo=self._archivo())
+
+        response = self.client.post(
+            reverse("sindicato:documento_editar", args=[documento.pk]),
+            {**self._datos_formulario(titulo="Título actualizado"), "archivo": self._archivo("otro.txt")},
+        )
+
+        self.assertRedirects(response, reverse("sindicato:documentos"))
+        documento.refresh_from_db()
+        self.assertEqual(documento.titulo, "Título actualizado")
+
+    def test_directiva_puede_eliminar_documento(self):
+        self.client.force_login(crear_directivo())
+        documento = Documento.objects.create(titulo="A borrar", archivo=self._archivo())
+
+        response = self.client.post(reverse("sindicato:documento_eliminar", args=[documento.pk]))
+
+        self.assertRedirects(response, reverse("sindicato:documentos"))
+        self.assertFalse(Documento.objects.filter(pk=documento.pk).exists())
+
+    # --- Delegado autenticado sin permisos: 403 ---
+
+    def test_delegado_no_puede_subir_documento(self):
+        self.client.force_login(crear_usuario())
+        response = self.client.get(reverse("sindicato:documento_subir"))
+        self.assertEqual(response.status_code, 403)
+
+    def test_delegado_no_puede_editar_documento(self):
+        self.client.force_login(crear_usuario())
+        documento = Documento.objects.create(titulo="Doc", archivo=self._archivo())
+        response = self.client.get(reverse("sindicato:documento_editar", args=[documento.pk]))
+        self.assertEqual(response.status_code, 403)
+
+    def test_delegado_no_puede_eliminar_documento(self):
+        self.client.force_login(crear_usuario())
+        documento = Documento.objects.create(titulo="Doc", archivo=self._archivo())
+        response = self.client.get(reverse("sindicato:documento_eliminar", args=[documento.pk]))
+        self.assertEqual(response.status_code, 403)
+
+    # --- Anónimo: redirige a login ---
+
+    def test_anonimo_redirige_a_login_al_subir(self):
+        response = self.client.get(reverse("sindicato:documento_subir"))
+        self.assertIn(reverse("sindicato:login"), response.url)
+
+    # --- Visibilidad de botones en el HTML ---
+
+    def test_delegado_no_ve_botones_de_gestion(self):
+        Documento.objects.create(titulo="Doc público", archivo=self._archivo(), es_publico=True)
+        self.client.force_login(crear_usuario())
+
+        response = self.client.get(reverse("sindicato:documentos"))
+
+        self.assertNotContains(response, "Subir documento")
+        self.assertNotContains(response, ">Editar<")
+        self.assertNotContains(response, ">Eliminar<")
+
+    def test_directiva_ve_botones_de_gestion(self):
+        Documento.objects.create(titulo="Doc público", archivo=self._archivo(), es_publico=True)
+        self.client.force_login(crear_directivo())
+
+        response = self.client.get(reverse("sindicato:documentos"))
+
+        self.assertContains(response, "Subir documento")
+        self.assertContains(response, ">Editar<")
+        self.assertContains(response, ">Eliminar<")

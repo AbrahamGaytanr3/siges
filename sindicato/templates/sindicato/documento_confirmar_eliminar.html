@@ -1,0 +1,19 @@
+{% extends "sindicato/base.html" %}
+{% block titulo %}Eliminar documento{% endblock %}
+{% block contenido %}
+
+  <a class="volver" href="{% url 'sindicato:documentos' %}">&larr; Volver</a>
+
+  <div class="login-envoltorio">
+    <div class="tarjeta login-tarjeta">
+      <h2>¿Eliminar este documento?</h2>
+      <p>{{ documento.titulo }}</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="enlace-destacado boton-peligro">Sí, eliminar</button>
+      </form>
+      <p><a class="volver" href="{% url 'sindicato:documentos' %}">Cancelar</a></p>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,6 +1,8 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from .forms import DocumentoForm
 from .models import InformacionSindicato, CentroTrabajo, Documento
 
 CENTROS_POR_PAGINA = 10
@@ -40,3 +42,45 @@ def documentos_lista(request):
     paginador = Paginator(documentos_qs, DOCUMENTOS_POR_PAGINA)
     documentos = paginador.get_page(request.GET.get("pagina"))
     return render(request, "sindicato/documentos.html", {"documentos": documentos})
+
+
+@login_required
+@permission_required("sindicato.add_documento", raise_exception=True)
+def documento_subir(request):
+    if request.method == "POST":
+        form = DocumentoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Documento subido correctamente.")
+            return redirect("sindicato:documentos")
+    else:
+        form = DocumentoForm()
+    return render(request, "sindicato/documento_form.html", {"form": form, "accion": "Subir"})
+
+
+@login_required
+@permission_required("sindicato.change_documento", raise_exception=True)
+def documento_editar(request, pk):
+    documento = get_object_or_404(Documento, pk=pk)
+    if request.method == "POST":
+        form = DocumentoForm(request.POST, request.FILES, instance=documento)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Documento actualizado.")
+            return redirect("sindicato:documentos")
+    else:
+        form = DocumentoForm(instance=documento)
+    return render(request, "sindicato/documento_form.html", {
+        "form": form, "accion": "Editar", "documento": documento,
+    })
+
+
+@login_required
+@permission_required("sindicato.delete_documento", raise_exception=True)
+def documento_eliminar(request, pk):
+    documento = get_object_or_404(Documento, pk=pk)
+    if request.method == "POST":
+        documento.delete()
+        messages.success(request, "Documento eliminado.")
+        return redirect("sindicato:documentos")
+    return render(request, "sindicato/documento_confirmar_eliminar.html", {"documento": documento})

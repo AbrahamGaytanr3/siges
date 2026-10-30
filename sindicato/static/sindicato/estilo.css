@@ -172,6 +172,29 @@ section h2 {
 .doc-item.tipo-acta { border-left-color: #6a4ea3; }
 .doc-item.tipo-otro { border-left-color: #8a8a8a; }
 
+.doc-acciones { display: flex; gap: 14px; margin-top: 8px; }
+.doc-acciones a {
+  font-size: .8rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--texto-suave);
+}
+.doc-acciones a:hover { text-decoration: underline; }
+.enlace-peligro { color: var(--acento) !important; }
+
+/* ---------- Mensajes ---------- */
+
+.mensajes { list-style: none; padding: 0; margin: 0 0 20px; }
+.mensaje {
+  background: var(--azul-claro);
+  color: var(--azul-700);
+  border-radius: var(--radio-sm);
+  padding: 10px 14px;
+  font-size: .9rem;
+  margin-bottom: 8px;
+}
+.mensaje.error { background: var(--acento-claro); color: var(--acento); }
+
 .enlace-destacado {
   display: inline-flex;
   align-items: center;
@@ -251,12 +274,25 @@ footer p { margin: 0; }
   margin: 14px 0 4px;
 }
 .login-tarjeta input[type="text"],
-.login-tarjeta input[type="password"] {
+.login-tarjeta input[type="password"],
+.campo-formulario {
   width: 100%;
   padding: 9px 12px;
   border: 1px solid var(--borde);
   border-radius: var(--radio-sm);
   font-size: .95rem;
+  font-family: inherit;
+}
+select.campo-formulario { background: var(--superficie); }
+.login-tarjeta p { margin: 0 0 14px; }
+.login-tarjeta label { margin-top: 0; }
+.login-tarjeta .campo-checkbox { width: auto; margin-right: 6px; }
+.login-tarjeta .errorlist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 4px;
+  color: var(--acento);
+  font-size: .82rem;
 }
 .login-tarjeta button {
   width: 100%;
@@ -273,6 +309,8 @@ footer p { margin: 0; }
   font-size: .85rem;
   margin: 0 0 8px;
 }
+.boton-peligro { background: var(--acento); }
+.boton-peligro:hover { background: #9c6420; }
 
 /* ---------- Logout en el nav ---------- */
 

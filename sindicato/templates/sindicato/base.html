@@ -31,6 +31,13 @@
     </div>
   </nav>
   <main>
+    {% if messages %}
+      <ul class="mensajes">
+        {% for message in messages %}
+          <li class="mensaje{% if message.tags %} {{ message.tags }}{% endif %}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
     {% block contenido %}{% endblock %}
   </main>
   <footer>

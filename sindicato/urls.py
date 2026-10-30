@@ -10,4 +10,7 @@ urlpatterns = [
     path("", views.inicio, name="inicio"),
     path("centro/<int:pk>/", views.centro_detalle, name="centro_detalle"),
     path("documentos/", views.documentos_lista, name="documentos"),
+    path("documentos/subir/", views.documento_subir, name="documento_subir"),
+    path("documentos/<int:pk>/editar/", views.documento_editar, name="documento_editar"),
+    path("documentos/<int:pk>/eliminar/", views.documento_eliminar, name="documento_eliminar"),
 ]
