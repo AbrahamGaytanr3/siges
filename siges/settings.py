@@ -36,6 +36,26 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+# Ruta del panel de administración. Cambiarla en producción (vía env) dificulta
+# que bots que escanean /admin/ por defecto lo encuentren.
+ADMIN_URL = os.environ.get('DJANGO_ADMIN_URL', 'admin/')
+
+# Endurecimiento de seguridad para producción (no afecta a `runserver` en DEBUG).
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+
+# La sesión del admin expira tras 2 horas de inactividad y se renueva en cada
+# petición, para no dejar sesiones abiertas indefinidamente.
+SESSION_COOKIE_AGE = 60 * 60 * 2
+SESSION_SAVE_EVERY_REQUEST = True
+
 
 # Application definition
 
@@ -46,6 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'axes',
     'sindicato',
 ]
 
@@ -57,7 +78,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
+
+# django-axes: bloquea intentos de login tras varios fallos (protege /admin/
+# de fuerza bruta). AxesStandaloneBackend debe ir primero.
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1  # horas de bloqueo tras exceder el límite
+AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']
 
 ROOT_URLCONF = 'siges.urls'
 
