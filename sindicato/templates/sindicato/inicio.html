@@ -35,6 +35,7 @@
           </li>
         {% endfor %}
       </ul>
+      {% include "sindicato/_paginacion.html" with page_obj=centros %}
     {% else %}
       <p>Aún no hay centros de trabajo registrados.</p>
     {% endif %}

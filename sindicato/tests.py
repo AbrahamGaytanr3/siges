@@ -1,10 +1,20 @@
+import atexit
+import shutil
+import tempfile
+
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.models import ProtectedError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
+
+# Los FileField no se revierten con el rollback de transacciones de TestCase,
+# así que las pruebas que suben archivos usan un MEDIA_ROOT temporal en vez
+# de escribir en la carpeta media/ real del proyecto.
+MEDIA_ROOT_PRUEBAS = tempfile.mkdtemp(prefix="siges_test_media_")
+atexit.register(shutil.rmtree, MEDIA_ROOT_PRUEBAS, ignore_errors=True)
 
 from .admin import InformacionSindicatoAdmin
 from .models import Agremiado, CentroTrabajo, Documento, InformacionSindicato
@@ -85,6 +95,7 @@ class AgremiadoModelTests(TestCase):
             agremiado.full_clean()
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT_PRUEBAS)
 class DocumentoModelTests(TestCase):
     def _archivo(self):
         return SimpleUploadedFile("estatuto.txt", b"contenido", content_type="text/plain")
@@ -114,6 +125,7 @@ class InformacionSindicatoAdminTests(TestCase):
         self.assertFalse(self.admin.has_delete_permission(request=None))
 
 
+@override_settings(MEDIA_ROOT=MEDIA_ROOT_PRUEBAS)
 class VistasPublicasTests(TestCase):
     def _archivo(self):
         return SimpleUploadedFile("doc.txt", b"contenido", content_type="text/plain")

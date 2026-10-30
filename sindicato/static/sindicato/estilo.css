@@ -85,6 +85,18 @@ section h2 {
   padding-bottom: 6px;
 }
 
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 18px;
+  font-size: .9rem;
+  color: var(--gris);
+}
+.paginacion a { color: var(--azul); font-weight: 600; text-decoration: none; }
+.paginacion a:hover { text-decoration: underline; }
+
 footer {
   text-align: center;
   color: var(--gris);
